@@ -1,14 +1,18 @@
-public class Piece {
+import java.util.LinkedList;
+
+public abstract class Piece {
     boolean team;//white true
     char name;
 
     public void isThreating(int x, int y) {
 
     }
-    public boolean getTeam (){
+    boolean getTeam (){
         return team;
     }
-    public char getName(){
+    char getName(){
         return name;
     }
+    abstract LinkedList<Coordinate> moves(int x, int y, Piece[][] board);
+
 }

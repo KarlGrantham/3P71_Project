@@ -7,17 +7,17 @@ public class Board {
         Random randy = new Random(seed);
         LinkedList<Piece> remainingPieces = new LinkedList<>();
         boolean team = true;
-        for (int j = 0; j < 2; j++) {
-            for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 2; j++) {//for each team
+            for (int i = 0; i < 8; i++) {//add pawns to list
                 remainingPieces.add(new Pawn(team));
             }
             for (int i = 0; i < 2; i++) {
-                remainingPieces.add(new Knight(team));
-                remainingPieces.add(new Bishop(team));
-                remainingPieces.add(new Rook(team));
+                remainingPieces.add(new Knight(team));//add knights to list
+                remainingPieces.add(new Bishop(team));//add bishops to list
+                remainingPieces.add(new Rook(team));//add rooks to list
             }
-            remainingPieces.add(new Queen(team));
-            remainingPieces.add(new King(team));
+            remainingPieces.add(new Queen(team));//add a queen to the list
+            remainingPieces.add(new King(team));//add a king ti the list
             team = false;
         }
         Piece curr = null;
@@ -34,6 +34,8 @@ public class Board {
                         break;
                     }
                 }
+            } else {
+                remainingPieces.remove();
             }
         }
 
@@ -50,11 +52,16 @@ public class Board {
         boolean team = true;
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 8; j++) {
-                boardState[j][i * 5 + 1] = new Pawn(team);
+                boardState[i * 5 + 1][j] = new Pawn(team);
             }
-            boardState[0][i*7] = new Rook(team);
-            boardState[0][i*7] = new Rook(team);
-
+            boardState[i * 7][0] = new Rook(team);
+            boardState[i * 7][1] = new Knight(team);
+            boardState[i * 7][2] = new Bishop(team);
+            boardState[i * 7][3] = new Queen(team);
+            boardState[i * 7][4] = new King(team);
+            boardState[i * 7][5] = new Bishop(team);
+            boardState[i * 7][6] = new Knight(team);
+            boardState[i * 7][7] = new Rook(team);
             team = false;
         }
     }
@@ -62,10 +69,10 @@ public class Board {
     public void printBoard() {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                if (boardState[i][j] != null) {
-                    System.out.print(boardState[i][j].getName());
+                if (boardState[j][i] != null) {
+                    System.out.print(boardState[j][i].getName());
                 } else {
-                    System.out.print('╳');
+                    System.out.print('_');
                 }
             }
             System.out.println();
