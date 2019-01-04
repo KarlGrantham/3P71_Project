@@ -38,7 +38,7 @@ public class GUI {
         for (int y = 0; y < 8; y++) {
             for (int x = 0; x < 8; x++) {
                 JButton button = new JButton();
-                String path = "C:\\Users\\karlg\\Desktop\\IMAGES\\";
+                String path = "C:\\IMAGES\\";
                 if (b.getBoard()[x][y] != null && b.getBoard()[x][y].team == true) {
                     button.setIcon(new ImageIcon(path + b.getBoard()[x][y].imageName + ".png"));
                     button.setDisabledIcon(new ImageIcon(path + b.getBoard()[x][y].imageName + ".png"));

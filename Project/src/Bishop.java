@@ -18,80 +18,28 @@ public class Bishop extends Piece {
         LinkedList<Coordinate> moveset = new LinkedList<>();
         int tempX = x;
         int tempY = y;
-        while (true) {//moving down-left
-            if ((tempX - 1 >= 0) && (tempY + 1 <= 7)) {//if bishop can move up-left
-                if (board[tempX - 1][tempY + 1] == null) {//if up-left is an empty space
-                    Coordinate curr = new Coordinate(tempX - 1, tempY + 1);
-                    moveset.add(curr);
-                } else if (board[tempX - 1][tempY + 1].getName() > 96) {//if space is occupied by a black piece
-                    if (team) {//if moving piece is white
-                        Coordinate curr = new Coordinate(tempX - 1, tempY + 1);//moving piece may capture, but cannot move further
-                        moveset.add(curr);
-                    }
-                    break;
-                } else if (board[tempX - 1][tempY + 1].getName() < 91) {//if space is occupied by a white piece
-                    if (!team) {//if moving piece is black
-                        Coordinate curr = new Coordinate(tempX - 1, tempY + 1);//moving piece may capture, but cannot move further
-                        moveset.add(curr);
-                    }
-                    break;
-                }
-            } else {
-                break;
-            }
-            //if got here, the piece could move, increment position and try again
-            tempX--;
-            tempY++;
-        }
-        tempX = x;//reset tempX
-        tempY = y;//reset tempY
-        while (true) {//moving down-right
-            if ((tempX + 1 <= 7) && (tempY + 1 <= 7)) {//if bishop can move down-right
-                if (board[tempX + 1][tempY + 1] == null) {//if up-right is an empty space
-                    Coordinate curr = new Coordinate(tempX + 1, tempY + 1);
-                    moveset.add(curr);
-                } else if (board[tempX + 1][tempY + 1].getName() > 96) {//if space is occupied by a black piece
-                    if (team) {//if moving piece is white
-                        Coordinate curr = new Coordinate(tempX + 1, tempY + 1);//moving piece may capture, but cannot move further
-                        moveset.add(curr);
-                    }
-                    break;
-                } else if (board[tempX + 1][tempY + 1].getName() < 91) {//if space is occupied by a white piece
-                    if (!team) {//if moving piece is black
-                        Coordinate curr = new Coordinate(tempX + 1, tempY + 1);//moving piece may capture, but cannot move further
-                        moveset.add(curr);
-                    }
-                    break;
-                }
-            } else {
-                break;
-            }
-            //if got here, the piece could move, increment position and try again
-            tempX++;
-            tempY++;
-        }
-        tempX = x;//reset tempX
-        tempY = y;//reset tempY
         while (true) {//moving up-left
-            if ((tempX - 1 >= 0) && (tempY - 1 >= 0)) {//if bishop can move up-left
-                if (board[tempX - 1][tempY - 1] == null) {//if down-left is an empty space
-                    Coordinate curr = new Coordinate(tempX - 1, tempY - 1);
+            int up = tempY - 1;
+            int left = tempX - 1;
+            if ((left >= 0) && (up >= 0)) {//if bishop can move up-left
+                if (board[left][up] == null) {//if up-left is an empty space
+                    Coordinate curr = new Coordinate(left, up);
                     moveset.add(curr);
-                } else if (board[tempX - 1][tempY - 1].getName() > 96) {//if space is occupied by a black piece
+                } else if (board[left][up].getName() > 96) {//if space is occupied by a black piece
                     if (team) {//if moving piece is white
-                        Coordinate curr = new Coordinate(tempX - 1, tempY - 1);//moving piece may capture, but cannot move further
+                        Coordinate curr = new Coordinate(left, up);//moving piece may capture, but cannot move further
                         moveset.add(curr);
                     }
-                    break;
-                } else if (board[tempX - 1][tempY - 1].getName() < 91) {//if space is occupied by a white piece
+                    break;//moving piece can no longer move
+                } else if (board[left][up].getName() < 91) {//if space is occupied by a white piece
                     if (!team) {//if moving piece is black
-                        Coordinate curr = new Coordinate(tempX - 1, tempY - 1);//moving piece may capture, but cannot move further
+                        Coordinate curr = new Coordinate(left, up);//moving piece may capture, but cannot move further
                         moveset.add(curr);
                     }
-                    break;
+                    break;//moving piece can no longer move
                 }
-            } else {
-                break;
+            } else {//else, there is no room left on board
+                break;//moving piece can no longer move
             }
             //if got here, the piece could move, increment position and try again
             tempX--;
@@ -100,30 +48,89 @@ public class Bishop extends Piece {
         tempX = x;//reset tempX
         tempY = y;//reset tempY
         while (true) {//moving up-right
-            if ((tempX + 1 <= 7) && (tempY - 1 >= 0)) {//if bishop can move up-right
-                if (board[tempX + 1][tempY - 1] == null) {//if up-left is an empty space
-                    Coordinate curr = new Coordinate(tempX + 1, tempY - 1);
+            int up = tempY - 1;
+            int right = tempX + 1;
+            if ((right <= 7) && (up >= 0)) {//if bishop can move up-right
+                if (board[right][up] == null) {//if up-right is an empty space
+                    Coordinate curr = new Coordinate(right, up);
                     moveset.add(curr);
-                } else if (board[tempX + 1][tempY - 1].getName() > 96) {//if space is occupied by a black piece
+                } else if (board[right][up].getName() > 96) {//if space is occupied by a black piece
                     if (team) {//if moving piece is white
-                        Coordinate curr = new Coordinate(tempX + 1, tempY - 1);//moving piece may capture, but cannot move further
+                        Coordinate curr = new Coordinate(right, up);//moving piece may capture, but cannot move further
                         moveset.add(curr);
-
                     }
-                    break;
-                } else if (board[tempX + 1][tempY - 1].getName() < 91) {//if space is occupied by a white piece
+                    break;//moving piece can no longer move
+                } else if (board[right][up].getName() < 91) {//if space is occupied by a white piece
                     if (!team) {//if moving piece is white
-                        Coordinate curr = new Coordinate(tempX + 1, tempY - 1);//moving piece may capture, but cannot move further
+                        Coordinate curr = new Coordinate(right, up);//moving piece may capture, but cannot move further
                         moveset.add(curr);
                     }
-                    break;
+                    break;//moving piece can no longer move
                 }
-            } else {
-                break;
+            } else {//else, there is no room left on board
+                break;//moving piece can no longer move
             }
             //if got here, the piece could move, increment position and try again
             tempX++;
             tempY--;
+        }
+        tempX = x;//reset tempX
+        tempY = y;//reset tempY
+        while (true) {//moving down-left
+            int down = tempY + 1;
+            int left = tempX - 1;
+            if ((left >= 0) && (down <= 7)) {//if bishop can move down-left
+                if (board[left][down] == null) {//if down-left is an empty space
+                    Coordinate curr = new Coordinate(left, down);
+                    moveset.add(curr);
+                } else if (board[left][down].getName() > 96) {//if space is occupied by a black piece
+                    if (team) {//if moving piece is white
+                        Coordinate curr = new Coordinate(left, down);//moving piece may capture, but cannot move further
+                        moveset.add(curr);
+                    }
+                    break;//moving piece can no longer move
+                } else if (board[left][down].getName() < 91) {//if space is occupied by a white piece
+                    if (!team) {//if moving piece is black
+                        Coordinate curr = new Coordinate(left, down);//moving piece may capture, but cannot move further
+                        moveset.add(curr);
+                    }
+                    break;//moving piece can no longer move
+                }
+            } else {//else, there is no room left on board
+                break;//moving piece can no longer move
+            }
+            //if got here, the piece could move, increment position and try again
+            tempX--;
+            tempY++;
+        }
+        tempX = x;//reset tempX
+        tempY = y;//reset tempY
+        while (true) {//moving down-right
+            int down = tempY + 1;
+            int right = tempX + 1;
+            if ((right <= 7) && (down<= 7)) {//if bishop can move down-right
+                if (board[right][down] == null) {//if down-right is an empty space
+                    Coordinate curr = new Coordinate(right, down);
+                    moveset.add(curr);
+                } else if (board[right][down].getName() > 96) {//if space is occupied by a black piece
+                    if (team) {//if moving piece is white
+                        Coordinate curr = new Coordinate(right, down);//moving piece may capture, but cannot move further
+                        moveset.add(curr);
+                    }
+                    break;//moving piece can no longer move
+                } else if (board[right][down].getName() < 91) {//if space is occupied by a white piece
+                    if (!team) {//if moving piece is black
+                        Coordinate curr = new Coordinate(right, down);//moving piece may capture, but cannot move further
+                        moveset.add(curr);
+                    }
+                    break;//moving piece can no longer move
+                }
+            } else {//else, there is no room left on board
+                break;//moving piece can no longer move
+            }
+            //if got here, the piece could move, increment position and try again
+            tempX++;
+            tempY++;
         }
         return moveset;
     }
