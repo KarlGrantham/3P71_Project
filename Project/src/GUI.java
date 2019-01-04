@@ -82,12 +82,12 @@ public class GUI {
             }
             int x = (int) btn.getClientProperty("x");
             int y = (int) btn.getClientProperty("y");
-            System.out.println(x + " " + y);
+//            System.out.println(x + " " + y);
             LinkedList<Coordinate> possibleMoves = b.getBoard()[x][y].moves(x, y, b.getBoard());
             btn.setBackground(Color.RED);
-            System.out.println(b.getBoard()[x][y].getClass().getName());
+//            System.out.println(b.getBoard()[x][y].getClass().getName());
             while (!possibleMoves.isEmpty()) {
-                System.out.println(possibleMoves.get(0).x + " " + possibleMoves.get(0).y);
+//                System.out.println(possibleMoves.get(0).x + " " + possibleMoves.get(0).y);
 
                 buttonList[possibleMoves.get(0).x][possibleMoves.get(0).y].setBackground(Color.BLUE);
                 buttonList[possibleMoves.get(0).x][possibleMoves.get(0).y].setEnabled(true);

@@ -112,19 +112,16 @@ public class King extends Piece {
         }
 
         tempY = y;//reset tempY
-        System.out.println(tempY);
         if (tempY - 1 >= 0) {//if rook can move up
             if (board[x][tempY - 1] == null) {//if down is an empty space
                 Coordinate curr = new Coordinate(x, tempY - 1);
                 moveset.add(curr);
             } else if (board[x][tempY - 1].getName() > 96) {//if space is occupied by a black piece
-                System.out.println("occupied by black piece stop move up");
                 if (team) {//if moving piece is white
                     Coordinate curr = new Coordinate(x, tempY - 1);//moving piece may capture, but cannot move further
                     moveset.add(curr);
                 }
             } else if (board[x][tempY - 1].getName() < 91) {//if space is occupied by a white piece
-                System.out.println("occupied by white piece stop move up");
                 if (!team) {//if moving piece is black
                     Coordinate curr = new Coordinate(x, tempY - 1);//moving piece may capture, but cannot move further
                     moveset.add(curr);
