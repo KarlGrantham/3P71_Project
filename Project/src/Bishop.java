@@ -3,11 +3,14 @@ import java.util.LinkedList;
 public class Bishop extends Piece {
 
     public Bishop(boolean t) {
+        hasMoved = false;
         team = t;
         if (team) {
             name = 'B';
+            imageName = "wBishop";
         } else {
             name = 'b';
+            imageName = "bBishop";
         }
     }
 
@@ -109,7 +112,7 @@ public class Bishop extends Piece {
                     }
                     break;
                 } else if (board[tempX + 1][tempY - 1].getName() < 91) {//if space is occupied by a white piece
-                    if (team) {//if moving piece is white
+                    if (!team) {//if moving piece is white
                         Coordinate curr = new Coordinate(tempX + 1, tempY - 1);//moving piece may capture, but cannot move further
                         moveset.add(curr);
                     }

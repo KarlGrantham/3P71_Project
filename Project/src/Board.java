@@ -1,7 +1,13 @@
 import java.util.*;
 
 public class Board {
-    private static Piece[][] boardState = new Piece[8][8];
+    private Piece[][] boardState = new Piece[8][8];
+    int fitness;
+    LinkedList<Board> children;
+    Node parent;//the previous board state
+    Coordinate[] lastMove;//the beginning and end Coordinates for the previous move (for en passant)
+    boolean whiteCheck;//true if white is in check, false otherwise
+    boolean blackCheck;//true if black is in check, false otherwise
 
     public Board(double rate, long seed) {//board randomizer
         Random randy = new Random(seed);
@@ -38,56 +44,235 @@ public class Board {
                 remainingPieces.remove();
             }
         }
-
         //random chance remove and put on the board at random spot, otherwise remove from list and don't put on board
         //if space occupied, try again
 
     }
 
     public Board(Piece[][] p) {//regular board
-        deepCopy(p);
+        boardState = p;
     }
 
-    public Board() {
+    public Board() {//initial chess board
         boolean team = true;
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 8; j++) {
-                boardState[i * 5 + 1][j] = new Pawn(team);
+                boardState[j][i * 5 + 1] = new Pawn(team);
             }
-            boardState[i * 7][0] = new Rook(team);
-            boardState[i * 7][1] = new Knight(team);
-            boardState[i * 7][2] = new Bishop(team);
-            boardState[i * 7][3] = new Queen(team);
-            boardState[i * 7][4] = new King(team);
-            boardState[i * 7][5] = new Bishop(team);
-            boardState[i * 7][6] = new Knight(team);
-            boardState[i * 7][7] = new Rook(team);
+            boardState[0][i * 7] = new Rook(team);
+            boardState[1][i * 7] = new Knight(team);
+            boardState[2][i * 7] = new Bishop(team);
+            boardState[3][i * 7] = new Queen(team);
+            boardState[4][i * 7] = new King(team);
+            boardState[5][i * 7] = new Bishop(team);
+            boardState[6][i * 7] = new Knight(team);
+            boardState[7][i * 7] = new Rook(team);
             team = false;
         }
     }
 
+    public void calculateChildren(Board parent, boolean team) {
+        LinkedList<Coordinate> pieces = new LinkedList<>();
+        for (int y = 0; y < 8; y++) {
+            for (int x = 0; x < 8; x++) {
+                if (boardState[x][y] != null && boardState[x][y].team == team) {
+                    pieces.add(new Coordinate(x, y));
+                }
+            }
+        }
+        while (!pieces.isEmpty()) {
+            Coordinate piece = pieces.remove(0);
+            LinkedList<Coordinate> moves = boardState[piece.x][piece.y].moves(piece.x, piece.y, boardState);
+            boardState[piece.x][piece.y].hasMoved = true;
+            while (!moves.isEmpty()) {
+                Piece[][] childBoard = deepCopy(boardState);
+                Coordinate move = moves.remove(0);
+                Piece curr = getType(childBoard [piece.x][piece.y]);
+                boardState[piece.x][piece.y] = null;
+                boardState[move.x][move.y].hasMoved = true;
+
+            }
+        }
+    }
+
+    public Piece getType(Piece p) {
+        switch (p.getClass().getName()) {
+            case "Pawn":
+                return new Pawn(p.team);
+            case "Rook":
+                Rook thisRook = new Rook(p.team);
+                thisRook.hasMoved = p.hasMoved;
+                return thisRook;
+            case "Knight":
+                return new Knight(p.team);
+            case "Bishop":
+                return new Bishop(p.team);
+            case "Queen":
+                return new Queen(p.team);
+            case "King":
+                King thisKing = new King(p.team);
+                thisKing.hasMoved = p.hasMoved;
+                return thisKing;
+        }
+        return null;
+    }
+
     public void printBoard() {
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                if (boardState[j][i] != null) {
-                    System.out.print(boardState[j][i].getName());
+        for (int y = 0; y < 8; y++) {
+            for (int x = 0; x < 8; x++) {
+                if (boardState[x][y] != null) {
+                    System.out.print(boardState[x][y].getName());
                 } else {
-                    System.out.print('_');
+                    System.out.print('-');
                 }
             }
             System.out.println();
         }
     }
 
-    private static void deepCopy(Piece[][] p) {
+    public Piece[][] deepCopy(Piece[][] p) {
+        Piece[][] copy = new Piece[8][8];
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                boardState[i][j] = p[i][j];
+                copy[i][j] = p[i][j];
+            }
+        }
+        return copy;
+    }
+
+    public void karlCopy(Piece[][] p) {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (p[i][j] != null) {//if there is a piece in the source board at this location
+                    Piece curr;
+                    switch (p[i][j].getName()) {
+                        case 'p'://black pawn
+                            curr = new Pawn(false);
+                            curr.hasMoved = p[i][j].hasMoved;
+                            boardState[i][j] = curr;
+                            break;
+                        case 'r'://black rook
+                            curr = new Rook(false);
+                            curr.hasMoved = p[i][j].hasMoved;
+                            boardState[i][j] = curr;
+                            break;
+                        case 'n'://black knight
+                            curr = new Knight(false);
+                            curr.hasMoved = p[i][j].hasMoved;
+                            boardState[i][j] = curr;
+                            break;
+                        case 'b'://black bishop
+                            curr = new Bishop(false);
+                            curr.hasMoved = p[i][j].hasMoved;
+                            boardState[i][j] = curr;
+                            break;
+                        case 'q'://black queen
+                            curr = new Queen(false);
+                            curr.hasMoved = p[i][j].hasMoved;
+                            boardState[i][j] = curr;
+                            break;
+                        case 'k'://black king
+                            curr = new King(false);
+                            curr.hasMoved = p[i][j].hasMoved;
+                            boardState[i][j] = curr;
+                            break;
+                        case 'P'://white pawn
+                            curr = new Pawn(true);
+                            curr.hasMoved = p[i][j].hasMoved;
+                            boardState[i][j] = curr;
+                            break;
+                        case 'R'://white rook
+                            curr = new Rook(true);
+                            curr.hasMoved = p[i][j].hasMoved;
+                            boardState[i][j] = curr;
+                            break;
+                        case 'N'://white knight
+                            curr = new Knight(true);
+                            curr.hasMoved = p[i][j].hasMoved;
+                            boardState[i][j] = curr;
+                            break;
+                        case 'B'://white bishop
+                            curr = new Bishop(true);
+                            curr.hasMoved = p[i][j].hasMoved;
+                            boardState[i][j] = curr;
+                            break;
+                        case 'Q'://white queen
+                            curr = new Queen(true);
+                            curr.hasMoved = p[i][j].hasMoved;
+                            boardState[i][j] = curr;
+                            break;
+                        case 'K'://white king
+                            curr = new King(true);
+                            curr.hasMoved = p[i][j].hasMoved;
+                            boardState[i][j] = curr;
+                            break;
+                    }
+                    boardState[i][j] = p[i][j];
+                }
             }
         }
     }
 
+    public LinkedList<Board> getChildren() {
+        return children;
+    }
+
+
     public Piece[][] getBoard() {
         return boardState;
+    }
+
+    public double calcFitness() {
+        double pawnValue = 1;
+        double rookValue = 3;
+        double knightValue = 5;
+        double bishopValue = 4;
+        double queenValue = 8;
+        double kingValue = 0;
+        double fitness = 0;
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                switch (boardState[i][j].getName()) {
+                    case 'p'://black pawn
+                        fitness = fitness - pawnValue;
+                        break;
+                    case 'r'://black rook
+                        fitness = fitness - rookValue;
+                        break;
+                    case 'n'://black knight
+                        fitness = fitness - knightValue;
+                        break;
+                    case 'b'://black bishop
+                        fitness = fitness - bishopValue;
+                        break;
+                    case 'q'://black queen
+                        fitness = fitness - queenValue;
+                        break;
+                    case 'k'://black king
+                        fitness = fitness - kingValue;
+                        break;
+                    case 'P'://white pawn
+                        fitness = fitness + pawnValue;
+                        break;
+                    case 'R'://white rook
+                        fitness = fitness + rookValue;
+                        break;
+                    case 'N'://white knight
+                        fitness = fitness + knightValue;
+                        break;
+                    case 'B'://white bishop
+                        fitness = fitness + bishopValue;
+                        break;
+                    case 'Q'://white queen
+                        fitness = fitness + queenValue;
+                        break;
+                    case 'K'://white king
+                        fitness = fitness + kingValue;
+                        break;
+
+                }
+            }
+        }
+        return fitness;
     }
 }

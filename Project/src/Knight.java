@@ -6,8 +6,10 @@ public class Knight extends Piece {
         team = t;
         if (team) {
             name = 'N';
+            imageName = "wKnight";
         } else {
             name = 'n';
+            imageName = "bKnight";
         }
     }
 
@@ -59,7 +61,7 @@ public class Knight extends Piece {
                 }
             }
             if ((x + 1 <= 7)) {//if right-up moves are possible
-                if (x + 2 >= 0) {
+                if (x + 2 <= 7) {
                     if (CheckAvail(x + 2, y - 1, board)) {
                         Coordinate curr = new Coordinate(x + 2, y - 1);
                         moveset.add(curr);

@@ -1,8 +1,10 @@
 import java.util.LinkedList;
 
-public abstract class Piece {
+public class Piece {
     boolean team;//white true
     char name;
+    boolean hasMoved;//for castling and pawns, only used for rooks, pawns and kings
+    String imageName;
 
     public void isThreating(int x, int y) {
 
@@ -13,6 +15,8 @@ public abstract class Piece {
     char getName(){
         return name;
     }
-    abstract LinkedList<Coordinate> moves(int x, int y, Piece[][] board);
+    public LinkedList<Coordinate> moves(int x, int y, Piece[][] board) {
+        return null;
+    }
 
 }
