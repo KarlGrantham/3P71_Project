@@ -3,6 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+package project;
 
 import java.util.*;
 
@@ -11,7 +12,6 @@ public class Board {
     private Piece[][] boardState = new Piece[8][8];
     int fitness;
     LinkedList<Board> children;
-    Board parent;
     Coordinate[] lastMove;//the beginning and end Coordinates for the previous move (for en passant)
     boolean whiteCheck;//true if white is in check, false otherwise
     boolean blackCheck;//true if black is in check, false otherwise
@@ -93,7 +93,6 @@ public class Board {
         while (!pieces.isEmpty()) {//while the list of piece coordinates still has elements
             Coordinate piece = pieces.remove(0);//get a piece coordinate
             LinkedList<Coordinate> moves = boardState[piece.x][piece.y].moves(piece.x, piece.y, boardState);//get list of that pieces moves
-            //boardState[piece.x][piece.y].hasMoved = true;
             while (!moves.isEmpty()) {
                 Piece[][] childBoard = deepCopy(boardState);//duplicate the parent board to new array
                 Coordinate move = moves.remove(0);//get move out of list
@@ -102,19 +101,18 @@ public class Board {
                 childBoard[move.x][move.y] = curr;//put the duplicate in the new position
                 childBoard[move.x][move.y].hasMoved = true;//this piece has now moved
                 Board child = new Board(childBoard);//create new board object with childBoard
-                child.parent = this;
                 tempChildren.add(child);//add this alteration to the list of children
             }
         }
         children = tempChildren;//set child list to new child list
     }
-
+    
     public Piece[][] deepCopy(Piece[][] p) {
         Piece[][] copy = new Piece[8][8];
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 if (p[i][j] != null) {
-
+                    
                 copy[i][j] = p[i][j].deepCopy();
                 } else {
                     copy[i][j] = null;
@@ -204,6 +202,5 @@ public class Board {
             System.out.println();
         }
     }
-
 
 }
