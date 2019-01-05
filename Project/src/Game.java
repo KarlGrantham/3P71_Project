@@ -2,38 +2,69 @@ import java.util.LinkedList;
 
 public class Game {
     public Game(Board startBoard) {
-        AI white = new AI(startBoard, true);
-        AI black = new AI(white.getMove(), false);
+        AI white = new AI(true);
+        AI black = new AI(false);
+        Board currBoard = startBoard;
+//        root.calculateChildren(true);
+//        LinkedList<Board> children = (LinkedList<Board>) root.children.clone();
+//        while(!children.isEmpty()){
+//            System.out.println("----------");
+//            Board child = children.remove();
+//            child.printBoard();
+//        }
+        for(int i =0; i<3; i++) {
+            currBoard = white.miniMax(currBoard, white.team, 0);
+            System.out.println("White Move");
+            currBoard.printBoard();
+            currBoard = black.miniMax(currBoard, black.team, 0);
+            System.out.println("BlackMove");
+            currBoard.printBoard();
+        }
 
-        Board blackMove = black.getMove();
-        System.out.println("Fitness Here: " + blackMove.fitness);
-        System.out.println("The piece here is a " + blackMove.getBoard()[3][7]);
-        blackMove.calcFitness();
-        System.out.println("and now: " + blackMove.fitness);
+
     }
 
     public class AI {
-        Board startBoard;
         boolean team;
 
-        public AI(Board root, boolean t) {
+        public AI(boolean t) {
             team = t;
-            startBoard = root;
         }
 
-        Board getMove() {
-            startBoard.calculateChildren(team);
-            LinkedList<Board> children = (LinkedList<Board>) startBoard.children.clone();
-            Board bestChild = children.get(0);//initialize most fit child to the first one
-            int bestFitness = Integer.MIN_VALUE;//initialize best fitness value seen to minimum value
-            while (!children.isEmpty()) {
-                Board child = children.remove();//get the next child
-                if (bestFitness < child.fitness) {//if this is the most fit child we've seen
-                    bestChild = child;
-                    bestFitness = child.fitness;
+        Board miniMax(Board root, boolean max, int depth) {
+            root.calculateChildren(team);
+            LinkedList<Board> children = (LinkedList<Board>) root.children.clone();
+            if (!children.isEmpty()) {//if there are moves that can be made
+                if (depth < 3) {//if we are not at max depth yet
+                    int maxVal = Integer.MIN_VALUE;
+                    int minVal = Integer.MAX_VALUE;
+                    Board bestBoard = children.get(0);
+                    if (max) {//if calculating white's turn
+                        while (!children.isEmpty()) {
+                            Board currBoard = miniMax(children.remove(), false, depth + 1);
+                            if (currBoard.fitness > maxVal) {
+                                maxVal = currBoard.fitness;
+                                bestBoard = currBoard;
+                            }
+                        }
+                        return bestBoard;
+                    } else {//else, calculating black's turn
+                        while (!children.isEmpty()) {
+                            Board currBoard = miniMax(children.remove(), true, depth + 1);
+                            if (currBoard.fitness < minVal) {
+                                minVal = currBoard.fitness;
+                                bestBoard = currBoard;
+                            }
+                        }
+                        return bestBoard;
+                    }
+
+                } else {//else, max depth reached, return root
+                    return root;
                 }
+            } else {//else, there are no more moves that can be made, return root
+                return root;
             }
-            return bestChild;
         }
     }
 }

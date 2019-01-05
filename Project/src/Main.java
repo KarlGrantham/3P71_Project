@@ -7,12 +7,10 @@ public class Main {
     public static void main (String args []){
         Board thisBoard = new Board();
         Game thisGame = new Game(thisBoard);
-        Board b = new Board(1,1);
-//        b.printBoard();
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                GUI gui = new GUI(b);
+                GUI gui = new GUI(thisBoard);
             }
         });
     }

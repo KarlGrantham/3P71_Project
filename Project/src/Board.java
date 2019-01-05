@@ -46,12 +46,12 @@ public class Board {
         }
         //random chance remove and put on the board at random spot, otherwise remove from list and don't put on board
         //if space occupied, try again
-        fitness = calcFitness();
+        calcFitness();
     }
 
     public Board(Piece[][] p) {//regular board
         boardState = p;
-        fitness = calcFitness();
+        calcFitness();
     }
 
     public Board() {//initial chess board
@@ -70,7 +70,7 @@ public class Board {
             boardState[7][i * 7] = new Rook(team);
             team = false;
         }
-        fitness = calcFitness();
+        calcFitness();
     }
 
     public void calculateChildren(boolean team) {
@@ -224,59 +224,59 @@ public class Board {
         return boardState;
     }
 
-    public int calcFitness() {
+    public void calcFitness() {
         int pawnValue = 1;
         int rookValue = 3;
         int knightValue = 5;
         int bishopValue = 4;
         int queenValue = 8;
         int kingValue = 0;
-        int fitness = 0;
+        int fit = 0;
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 if (boardState[i][j] != null) {
                     switch (boardState[i][j].getName()) {
                         case 'p'://black pawn
-                            fitness = fitness - pawnValue;
+                            fit = fit - pawnValue;
                             break;
                         case 'r'://black rook
-                            fitness = fitness - rookValue;
+                            fit = fit - rookValue;
                             break;
                         case 'n'://black knight
-                            fitness = fitness - knightValue;
+                            fit = fit - knightValue;
                             break;
                         case 'b'://black bishop
-                            fitness = fitness - bishopValue;
+                            fit = fit - bishopValue;
                             break;
                         case 'q'://black queen
-                            fitness = fitness - queenValue;
+                            fit = fit - queenValue;
                             break;
                         case 'k'://black king
-                            fitness = fitness - kingValue;
+                            fit = fit - kingValue;
                             break;
                         case 'P'://white pawn
-                            fitness = fitness + pawnValue;
+                            fit = fit + pawnValue;
                             break;
                         case 'R'://white rook
-                            fitness = fitness + rookValue;
+                            fit = fit + rookValue;
                             break;
                         case 'N'://white knight
-                            fitness = fitness + knightValue;
+                            fit = fit + knightValue;
                             break;
                         case 'B'://white bishop
-                            fitness = fitness + bishopValue;
+                            fit = fit + bishopValue;
                             break;
                         case 'Q'://white queen
-                            fitness = fitness + queenValue;
+                            fit = fit + queenValue;
                             break;
                         case 'K'://white king
-                            fitness = fitness + kingValue;
+                            fit = fit + kingValue;
                             break;
 
                     }
                 }
             }
         }
-        return fitness;
+        fitness = fit;
     }
 }
