@@ -1,10 +1,17 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package project;
+
 import java.util.*;
 
 public class Board {
+
     private Piece[][] boardState = new Piece[8][8];
     int fitness;
     LinkedList<Board> children;
-    Node parent;//the previous board state
     Coordinate[] lastMove;//the beginning and end Coordinates for the previous move (for en passant)
     boolean whiteCheck;//true if white is in check, false otherwise
     boolean blackCheck;//true if black is in check, false otherwise
@@ -26,7 +33,7 @@ public class Board {
             remainingPieces.add(new King(team));//add a king ti the list
             team = false;
         }
-        Piece curr = null;
+        Piece curr;
         while (!remainingPieces.isEmpty()) {
             //System.out.println("removing " + curr.getName());
             double chance = randy.nextDouble();
@@ -46,12 +53,12 @@ public class Board {
         }
         //random chance remove and put on the board at random spot, otherwise remove from list and don't put on board
         //if space occupied, try again
-        calcFitness();
+        fitness = calcFitness();
     }
 
     public Board(Piece[][] p) {//regular board
         boardState = p;
-        calcFitness();
+        fitness = calcFitness();
     }
 
     public Board() {//initial chess board
@@ -70,7 +77,7 @@ public class Board {
             boardState[7][i * 7] = new Rook(team);
             team = false;
         }
-        calcFitness();
+        fitness = calcFitness();
     }
 
     public void calculateChildren(boolean team) {
@@ -123,6 +130,89 @@ public class Board {
         return null;
     }
 
+    public Piece[][] deepCopy(Piece[][] p) {
+        Piece[][] copy = new Piece[8][8];
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (p[i][j] != null) {
+                    
+                copy[i][j] = p[i][j].deepCopy();
+                } else {
+                    copy[i][j] = null;
+                }
+            }
+        }
+        return copy;
+    }
+
+    public Piece[][] getBoard() {
+        return boardState;
+    }
+
+    public int calcFitness() {
+        int pawnValue = 1;
+        int rookValue = 3;
+        int knightValue = 5;
+        int bishopValue = 4;
+        int queenValue = 8;
+        int kingValue = 0;
+        int fitness = 0;
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (boardState[i][j] != null) {
+                    switch (boardState[i][j].getName()) {
+                        case 'p'://black pawn
+                            fitness = fitness - pawnValue;
+                            break;
+                        case 'r'://black rook
+                            fitness = fitness - rookValue;
+                            break;
+                        case 'n'://black knight
+                            fitness = fitness - knightValue;
+                            break;
+                        case 'b'://black bishop
+                            fitness = fitness - bishopValue;
+                            break;
+                        case 'q'://black queen
+                            fitness = fitness - queenValue;
+                            break;
+                        case 'k'://black king
+                            fitness = fitness - kingValue;
+                            break;
+                        case 'P'://white pawn
+                            fitness = fitness + pawnValue;
+                            break;
+                        case 'R'://white rook
+                            fitness = fitness + rookValue;
+                            break;
+                        case 'N'://white knight
+                            fitness = fitness + knightValue;
+                            break;
+                        case 'B'://white bishop
+                            fitness = fitness + bishopValue;
+                            break;
+                        case 'Q'://white queen
+                            fitness = fitness + queenValue;
+                            break;
+                        case 'K'://white king
+                            fitness = fitness + kingValue;
+                            break;
+
+                    }
+                }
+            }
+        }
+        return fitness;
+    }
+
+    public Board move(Coordinate lastPieceClicked, Coordinate coordinate) {
+        Piece[][] newBoard = deepCopy(boardState);
+        Piece temp = newBoard[lastPieceClicked.x][lastPieceClicked.y].deepCopy();
+        newBoard[lastPieceClicked.x][lastPieceClicked.y] = null;
+        newBoard[coordinate.x][coordinate.y] = temp;
+        return new Board(newBoard);
+    }
+
     public void printBoard() {
         for (int y = 0; y < 8; y++) {
             for (int x = 0; x < 8; x++) {
@@ -134,16 +224,6 @@ public class Board {
             }
             System.out.println();
         }
-    }
-
-    public Piece[][] deepCopy(Piece[][] p) {
-        Piece[][] copy = new Piece[8][8];
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                copy[i][j] = p[i][j];
-            }
-        }
-        return copy;
     }
 
     public void karlCopy(Piece[][] p) {
@@ -217,66 +297,5 @@ public class Board {
                 }
             }
         }
-    }
-
-
-    public Piece[][] getBoard() {
-        return boardState;
-    }
-
-    public void calcFitness() {
-        int pawnValue = 1;
-        int rookValue = 3;
-        int knightValue = 5;
-        int bishopValue = 4;
-        int queenValue = 8;
-        int kingValue = 0;
-        int fit = 0;
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                if (boardState[i][j] != null) {
-                    switch (boardState[i][j].getName()) {
-                        case 'p'://black pawn
-                            fit = fit - pawnValue;
-                            break;
-                        case 'r'://black rook
-                            fit = fit - rookValue;
-                            break;
-                        case 'n'://black knight
-                            fit = fit - knightValue;
-                            break;
-                        case 'b'://black bishop
-                            fit = fit - bishopValue;
-                            break;
-                        case 'q'://black queen
-                            fit = fit - queenValue;
-                            break;
-                        case 'k'://black king
-                            fit = fit - kingValue;
-                            break;
-                        case 'P'://white pawn
-                            fit = fit + pawnValue;
-                            break;
-                        case 'R'://white rook
-                            fit = fit + rookValue;
-                            break;
-                        case 'N'://white knight
-                            fit = fit + knightValue;
-                            break;
-                        case 'B'://white bishop
-                            fit = fit + bishopValue;
-                            break;
-                        case 'Q'://white queen
-                            fit = fit + queenValue;
-                            break;
-                        case 'K'://white king
-                            fit = fit + kingValue;
-                            break;
-
-                    }
-                }
-            }
-        }
-        fitness = fit;
     }
 }
