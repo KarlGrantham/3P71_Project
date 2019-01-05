@@ -93,7 +93,6 @@ public class Board {
         while (!pieces.isEmpty()) {//while the list of piece coordinates still has elements
             Coordinate piece = pieces.remove(0);//get a piece coordinate
             LinkedList<Coordinate> moves = boardState[piece.x][piece.y].moves(piece.x, piece.y, boardState);//get list of that pieces moves
-            //boardState[piece.x][piece.y].hasMoved = true;
             while (!moves.isEmpty()) {
                 Piece[][] childBoard = deepCopy(boardState);//duplicate the parent board to new array
                 Coordinate move = moves.remove(0);//get move out of list
@@ -107,7 +106,7 @@ public class Board {
         }
         children = tempChildren;//set child list to new child list
     }
-
+    
     public Piece[][] deepCopy(Piece[][] p) {
         Piece[][] copy = new Piece[8][8];
         for (int i = 0; i < 8; i++) {
@@ -204,5 +203,4 @@ public class Board {
         }
     }
 
-    
 }

@@ -1,17 +1,15 @@
+package project;
 import java.util.LinkedList;
 
 public class Game {
+    
+    private AI ai;
+    
     public Game(Board startBoard) {
         AI white = new AI(true);
         AI black = new AI(false);
         Board currBoard = startBoard;
-//        root.calculateChildren(true);
-//        LinkedList<Board> children = (LinkedList<Board>) root.children.clone();
-//        while(!children.isEmpty()){
-//            System.out.println("----------");
-//            Board child = children.remove();
-//            child.printBoard();
-//        }
+        
         for(int i =0; i<3; i++) {
             currBoard = white.miniMax(currBoard, white.team, 0);
             System.out.println("White Move");
@@ -20,8 +18,14 @@ public class Game {
             System.out.println("BlackMove");
             currBoard.printBoard();
         }
-
-
+    }
+    
+    public Game(boolean currTeam) {
+        ai = new AI(currTeam);
+    }
+    
+    public Board nextMove(Board b){
+        return ai.miniMax(b, ai.team, 2);
     }
 
     public class AI {
