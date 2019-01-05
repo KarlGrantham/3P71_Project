@@ -1,4 +1,3 @@
-package project;
 import java.util.LinkedList;
 
 public class Rook extends Piece {
