@@ -1,3 +1,5 @@
+package project;
+
 import java.util.LinkedList;
 
 public class Knight extends Piece {
@@ -12,7 +14,7 @@ public class Knight extends Piece {
             imageName = "bKnight";
         }
     }
-
+    
     @Override
     public Piece deepCopy () {
         boolean tempTeam = team;

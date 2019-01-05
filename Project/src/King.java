@@ -1,3 +1,4 @@
+package project;
 import java.util.LinkedList;
 
 public class King extends Piece {
@@ -22,7 +23,7 @@ public class King extends Piece {
         temp.hasMoved = tempMoved;
         return temp;
     }
-
+    
     @Override
     public LinkedList<Coordinate> moves(int x, int y, Piece[][] board) {
         LinkedList<Coordinate> moveset = new LinkedList<>();

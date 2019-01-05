@@ -1,3 +1,5 @@
+package project;
+
 import java.util.LinkedList;
 
 public class Piece {
