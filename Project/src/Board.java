@@ -97,7 +97,7 @@ public class Board {
             while (!moves.isEmpty()) {
                 Piece[][] childBoard = deepCopy(boardState);//duplicate the parent board to new array
                 Coordinate move = moves.remove(0);//get move out of list
-                Piece curr = duplicatePiece(childBoard[piece.x][piece.y]);//get duplicate of piece that is currently moving
+                Piece curr = childBoard[piece.x][piece.y].deepCopy();//get duplicate of piece that is currently moving
                 childBoard[piece.x][piece.y] = null;//remove the piece from its origional location
                 childBoard[move.x][move.y] = curr;//put the duplicate in the new position
                 childBoard[move.x][move.y].hasMoved = true;//this piece has now moved
@@ -106,28 +106,6 @@ public class Board {
             }
         }
         children = tempChildren;//set child list to new child list
-    }
-
-    public Piece duplicatePiece(Piece p) {
-        switch (p.getClass().getName()) {
-            case "Pawn":
-                return new Pawn(p.team);
-            case "Rook":
-                Rook thisRook = new Rook(p.team);
-                thisRook.hasMoved = p.hasMoved;
-                return thisRook;
-            case "Knight":
-                return new Knight(p.team);
-            case "Bishop":
-                return new Bishop(p.team);
-            case "Queen":
-                return new Queen(p.team);
-            case "King":
-                King thisKing = new King(p.team);
-                thisKing.hasMoved = p.hasMoved;
-                return thisKing;
-        }
-        return null;
     }
 
     public Piece[][] deepCopy(Piece[][] p) {
@@ -226,76 +204,5 @@ public class Board {
         }
     }
 
-    public void karlCopy(Piece[][] p) {
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                if (p[i][j] != null) {//if there is a piece in the source board at this location
-                    Piece curr;
-                    switch (p[i][j].getName()) {
-                        case 'p'://black pawn
-                            curr = new Pawn(false);
-                            curr.hasMoved = p[i][j].hasMoved;
-                            boardState[i][j] = curr;
-                            break;
-                        case 'r'://black rook
-                            curr = new Rook(false);
-                            curr.hasMoved = p[i][j].hasMoved;
-                            boardState[i][j] = curr;
-                            break;
-                        case 'n'://black knight
-                            curr = new Knight(false);
-                            curr.hasMoved = p[i][j].hasMoved;
-                            boardState[i][j] = curr;
-                            break;
-                        case 'b'://black bishop
-                            curr = new Bishop(false);
-                            curr.hasMoved = p[i][j].hasMoved;
-                            boardState[i][j] = curr;
-                            break;
-                        case 'q'://black queen
-                            curr = new Queen(false);
-                            curr.hasMoved = p[i][j].hasMoved;
-                            boardState[i][j] = curr;
-                            break;
-                        case 'k'://black king
-                            curr = new King(false);
-                            curr.hasMoved = p[i][j].hasMoved;
-                            boardState[i][j] = curr;
-                            break;
-                        case 'P'://white pawn
-                            curr = new Pawn(true);
-                            curr.hasMoved = p[i][j].hasMoved;
-                            boardState[i][j] = curr;
-                            break;
-                        case 'R'://white rook
-                            curr = new Rook(true);
-                            curr.hasMoved = p[i][j].hasMoved;
-                            boardState[i][j] = curr;
-                            break;
-                        case 'N'://white knight
-                            curr = new Knight(true);
-                            curr.hasMoved = p[i][j].hasMoved;
-                            boardState[i][j] = curr;
-                            break;
-                        case 'B'://white bishop
-                            curr = new Bishop(true);
-                            curr.hasMoved = p[i][j].hasMoved;
-                            boardState[i][j] = curr;
-                            break;
-                        case 'Q'://white queen
-                            curr = new Queen(true);
-                            curr.hasMoved = p[i][j].hasMoved;
-                            boardState[i][j] = curr;
-                            break;
-                        case 'K'://white king
-                            curr = new King(true);
-                            curr.hasMoved = p[i][j].hasMoved;
-                            boardState[i][j] = curr;
-                            break;
-                    }
-                    boardState[i][j] = p[i][j];
-                }
-            }
-        }
-    }
+    
 }
