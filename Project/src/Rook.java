@@ -1,3 +1,4 @@
+package project;
 import java.util.LinkedList;
 
 public class Rook extends Piece {
@@ -15,7 +16,16 @@ public class Rook extends Piece {
         }
     }
 
+    @Override
+    public Piece deepCopy () {
+        boolean tempTeam = team;
+        Rook temp = new Rook(tempTeam);
+        boolean tempMoved = this.hasMoved;
+        temp.hasMoved = tempMoved;
+        return temp;
+    }
 
+    @Override
     public LinkedList<Coordinate> moves(int x, int y, Piece[][] board) {
         LinkedList<Coordinate> moveset = new LinkedList<>();
         int tempY = y;

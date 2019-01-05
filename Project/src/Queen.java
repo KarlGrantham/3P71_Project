@@ -1,3 +1,5 @@
+package project;
+
 import java.util.LinkedList;
 
 public class Queen extends Piece {
@@ -14,6 +16,14 @@ public class Queen extends Piece {
         }
     }
 
+    @Override
+    public Piece deepCopy () {
+        boolean tempTeam = team;
+        Queen temp = new Queen(tempTeam);
+        return temp;
+    }
+    
+    @Override
     public LinkedList<Coordinate> moves(int x, int y, Piece[][] board) {
         LinkedList<Coordinate> moveset = new LinkedList<>();
         int tempX = x;
@@ -239,4 +249,3 @@ public class Queen extends Piece {
         return moveset;
     }
 }
-
