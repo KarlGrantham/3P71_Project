@@ -1,4 +1,3 @@
-package project;
 import java.util.LinkedList;
 
 public class Pawn extends Piece {
@@ -13,7 +12,7 @@ public class Pawn extends Piece {
             name = 'p';
         }
     }
-    
+
     @Override
     public Piece deepCopy () {
         boolean tempTeam = team;
