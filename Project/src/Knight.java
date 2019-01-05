@@ -1,3 +1,5 @@
+package project;
+
 import java.util.LinkedList;
 
 public class Knight extends Piece {
@@ -12,7 +14,15 @@ public class Knight extends Piece {
             imageName = "bKnight";
         }
     }
+    
+    @Override
+    public Piece deepCopy () {
+        boolean tempTeam = team;
+        Knight temp = new Knight(tempTeam);
+        return temp;
+    }
 
+    @Override
     public LinkedList<Coordinate> moves(int x, int y, Piece [][] board) {
         LinkedList<Coordinate> moveset = new LinkedList<>();
         if (y + 1 <= 7) {//if down moves are possible

@@ -1,3 +1,4 @@
+package project;
 import java.util.LinkedList;
 
 public class Pawn extends Piece {
@@ -12,8 +13,16 @@ public class Pawn extends Piece {
             name = 'p';
         }
     }
+    
+    @Override
+    public Piece deepCopy () {
+        boolean tempTeam = team;
+        Pawn temp = new Pawn(tempTeam);
+        return temp;
+    }
 
     //check avail does not apply to pawns, they have specific attack patterns
+    @Override
     public LinkedList<Coordinate> moves(int x, int y, Piece[][] board) {
         LinkedList<Coordinate> moveset = new LinkedList<>();
         if (team) {//if the moving piece is white
