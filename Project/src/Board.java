@@ -15,7 +15,8 @@ public class Board {
     boolean whiteCheck;//true if white is in check, false otherwise
     boolean blackCheck;//true if black is in check, false otherwise
 
-    /**Constructs the board randomly
+    /**
+     * Constructs the board randomly
      *
      * @param rate the decimal rate of pieces added
      * @param seed the seed for the randomizer
@@ -58,19 +59,24 @@ public class Board {
         //random chance remove and put on the board at random spot, otherwise remove from list and don't put on board
         //if space occupied, try again
         fitness = calcFitness();
+        this.whiteCheck = checkCheck(true);
+        this.blackCheck = checkCheck(false);
     }
 
-    /**Constructs a duplicate of the specified board
+    /**
+     * Constructs a duplicate of the specified board
      *
      * @param p the baord to copy
      */
     public Board(Piece[][] p) {//regular board
         boardState = deepCopy(p);
         fitness = calcFitness();
+        this.whiteCheck = checkCheck(true);
+        this.blackCheck = checkCheck(false);
     }
 
-    /**Constructs the default starting chess board
-     *
+    /**
+     * Constructs the default starting chess board
      */
     public Board() {//initial chess board
         boolean team = true;
@@ -93,7 +99,8 @@ public class Board {
         fitness = calcFitness();
     }
 
-    /**Creates all boards that are possible as a result of a legal move on this board
+    /**
+     * Creates all boards that are possible as a result of a legal move on this board
      *
      * @param team the team currently moving
      */
@@ -122,8 +129,16 @@ public class Board {
                 //check check
                 child.whiteCheck = child.checkCheck(true);
                 child.blackCheck = child.checkCheck(false);
+                if (team) {//if white its white's turn to move
+                    if (!child.whiteCheck){//if this turn will not result in white being in check
+                        tempChildren.add(child);//add this alteration to the list of children
+                    }
+                } else{//else, it's black's turn to move
+                    if (!child.blackCheck) {//if this turn will not result in white being in check
+                        tempChildren.add(child);//add this alteration to the list of children
+                    }
+                }
 
-                tempChildren.add(child);//add this alteration to the list of children
             }
         }
         Board enPassantMove = checkEnPassant(team);
@@ -137,36 +152,38 @@ public class Board {
         children = tempChildren;//set child list to new child list
     }
 
-    /**Checks if a team is in check. Useful for blackCheck, whiteCheck
+    /**
+     * Checks if a team is in check. Useful for blackCheck, whiteCheck
      *
      * @param team the team currently being checked
      * @return true if in check, false otherwise
      */
 
 
-    public boolean checkCheck(boolean team){
+    public boolean checkCheck(boolean team) {
         boolean check = false;
-        Coordinate kingPos = new Coordinate(-1,-1);//initialize to impossible position
+        Coordinate kingPos = new Coordinate(-1, -1);//initialize to impossible position
         for (int y = 0; y < 8; y++) {//for each spot on the board
             for (int x = 0; x < 8; x++) {
                 if (boardState[x][y] != null && boardState[x][y].team == team) {//if there is a piece belonging to the specified team at this location
-                    if(boardState[x][y].getClass().getName().equals("king")){//if this piece is the king
-                        kingPos = new Coordinate(x,y);
+                    if (boardState[x][y].getClass().getName().equals("King")) {//if this piece is the king
+                        kingPos = new Coordinate(x, y);
                     }
                 }
             }
         }
         LinkedList<Coordinate> threats = getThreats(team);
-        while(!threats.isEmpty()){
+        while (!threats.isEmpty()) {
             Coordinate threat = threats.remove();
-            if (threat.x == kingPos.x && threat.y == kingPos.y){//if the threat coordinate is the king's position
+            if (threat.x == kingPos.x && threat.y == kingPos.y) {//if the threat coordinate is the king's position
                 check = true;
             }
         }
         return check;
     }
 
-    /**Checks if there are any en passant moves possible and returns the board on which the move has been made
+    /**
+     * Checks if there are any en passant moves possible and returns the board on which the move has been made
      *
      * @param team the team currently moving
      * @return the Board with the en passant move made, null if not possible
@@ -179,7 +196,7 @@ public class Board {
                 if (boardState[x][y] != null && boardState[x][y].team == team) {//if there is a piece belonging to the specified team at this location
                     if (boardState[x][y].getClass().getName().equals("Pawn")) {//if that piece is a pawn
                         if (team && y == 4) {//if its a white piece in position
-                            if (x-1>=0) {
+                            if (x - 1 >= 0) {
                                 if ((boardState[x - 1][y] != null) && (boardState[x - 1][y].getClass().getName().equals("Pawn")) && (!boardState[x - 1][y].team)) {
                                     //if there is a black pawn to the left
                                     if (parent.getBoard()[x - 1][y] == null) {//if there was not a pawn there last board
@@ -192,7 +209,7 @@ public class Board {
                                     }
                                 }
                             }
-                            if (x+1<=7) {
+                            if (x + 1 <= 7) {
                                 if ((boardState[x + 1][y] != null) && (boardState[x + 1][y].getClass().getName().equals("Pawn")) && (!boardState[x + 1][y].team)) {
                                     //if there is a black pawn to the right
                                     if (parent.getBoard()[x + 1][y] == null) {//if there was not a pawn there last board
@@ -207,7 +224,7 @@ public class Board {
                             }
                         }
                         if (!team && y == 3) {//if its a black piece in position
-                            if (x-1>=0) {
+                            if (x - 1 >= 0) {
                                 if ((boardState[x - 1][y] != null) && (boardState[x - 1][y].getClass().getName().equals("Pawn")) && (boardState[x - 1][y].team)) {
                                     //if there is a white pawn to the left
                                     if (parent.getBoard()[x - 1][y] == null) {//if there was not a pawn there last board
@@ -220,7 +237,7 @@ public class Board {
                                     }
                                 }
                             }
-                            if (x+1<=7) {
+                            if (x + 1 <= 7) {
                                 if ((boardState[x + 1][y] != null) && (boardState[x + 1][y].getClass().getName().equals("Pawn")) && (boardState[x + 1][y].team)) {
                                     //if there is a white pawn to the right
                                     if (parent.getBoard()[x + 1][y] == null) {//if there was not a pawn there last board
@@ -241,7 +258,8 @@ public class Board {
         return null;//if got here, there are no en passant moves
     }
 
-    /**Checks if there are any castling moves which can be made, returns a linked list with the Boards which have those moves, if possible, empty otherwise
+    /**
+     * Checks if there are any castling moves which can be made, returns a linked list with the Boards which have those moves, if possible, empty otherwise
      *
      * @param team the team currently moving
      * @return A linked list of boards of all possible castling moves, empty if not possible
@@ -391,7 +409,8 @@ public class Board {
         return castles;
     }
 
-    /**this method gets all coordinates which the enemy can reach in their next move. Useful for castling and check
+    /**
+     * this method gets all coordinates which the enemy can reach in their next move. Useful for castling and check
      *
      * @param team the team which these threats are a threat to
      * @return A linked list of threatened coordinates
@@ -414,7 +433,8 @@ public class Board {
         return threats;
     }
 
-    /**Duplicates a Board
+    /**
+     * Duplicates a Board
      *
      * @param p the Piece array of the board being copied
      * @return the duplicated board
@@ -434,7 +454,8 @@ public class Board {
         return copy;
     }
 
-    /**returns the Piece array held by a board
+    /**
+     * returns the Piece array held by a board
      *
      * @return
      */
@@ -442,7 +463,8 @@ public class Board {
         return boardState;
     }
 
-    /**calculates fitness of a board based on a primitive heuristic
+    /**
+     * calculates fitness of a board based on a primitive heuristic
      *
      * @return the number representing the fitness of the board
      */
@@ -502,10 +524,11 @@ public class Board {
         return fitness;
     }
 
-    /**Allows for moves from the player
+    /**
+     * Allows for moves from the player
      *
      * @param lastPieceClicked the piece most recently clicked by the player
-     * @param coordinate the place to which the player wishes to move this piece
+     * @param coordinate       the place to which the player wishes to move this piece
      * @return the Board which represents this move
      */
     public Board move(Coordinate lastPieceClicked, Coordinate coordinate) {
@@ -516,8 +539,8 @@ public class Board {
         return new Board(newBoard);
     }
 
-    /**prints the state of the current board to console
-     *
+    /**
+     * prints the state of the current board to console
      */
     public void printBoard() {
         for (int y = 0; y < 8; y++) {

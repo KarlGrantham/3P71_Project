@@ -21,6 +21,9 @@ public class Game {
     public Board nextMove(Board b, boolean currTeam) {
         ai = new AI(currTeam);
         Board aiMove = ai.miniMax(b, currTeam, 0, 2);
+        System.out.println("white is in check? " + aiMove.whiteCheck);
+        System.out.println("black is in check? " + aiMove.blackCheck);
+        aiMove.printBoard();
         return aiMove;
     }
 
