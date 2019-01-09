@@ -1,74 +1,139 @@
-package project;
 import java.util.LinkedList;
+import java.util.Random;
 
 public class Game {
-    
+
     private AI ai;
-    
+    private long seed;
+
     public Game(Board startBoard) {
         AI white = new AI(true);
         AI black = new AI(false);
         Board currBoard = startBoard;
-        
-        for(int i =0; i<3; i++) {
-            currBoard = white.miniMax(currBoard, white.team, 0);
-            System.out.println("White Move");
-            currBoard.printBoard();
-            currBoard = black.miniMax(currBoard, black.team, 0);
-            System.out.println("BlackMove");
-            currBoard.printBoard();
-        }
+
+
     }
-    
-    public Game(boolean currTeam) {
+
+    public Game(long s) {
+        seed = s;
+    }
+
+    public Board nextMove(Board b, boolean currTeam) {
         ai = new AI(currTeam);
-    }
-    
-    public Board nextMove(Board b){
-        return ai.miniMax(b, ai.team, 3);
+        //Board aiMove = ai.miniMax(b, currTeam, 0, 2);
+        Board aiMove = ai.alphaBeta(b, currTeam, 0, 4, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        System.out.println("white is in check? " + aiMove.whiteCheck);
+        System.out.println("black is in check? " + aiMove.blackCheck);
+        aiMove.printBoard();
+        return aiMove;
     }
 
     public class AI {
+
         boolean team;
 
         public AI(boolean t) {
             team = t;
         }
 
-        Board miniMax(Board root, boolean max, int depth) {
+        Board miniMax(Board root, boolean max, int currDepth, int maxDepth) {
             root.calculateChildren(team);
-            LinkedList<Board> children = (LinkedList<Board>) root.children.clone();
-            if (!children.isEmpty()) {//if there are moves that can be made
-                if (depth < 3) {//if we are not at max depth yet
-                    int maxVal = Integer.MIN_VALUE;
-                    int minVal = Integer.MAX_VALUE;
-                    Board bestBoard = children.get(0);
-                    if (max) {//if calculating white's turn
-                        while (!children.isEmpty()) {
-                            Board currBoard = miniMax(children.remove(), false, depth + 1);
-                            if (currBoard.fitness > maxVal) {
-                                maxVal = currBoard.fitness;
-                                bestBoard = currBoard;
-                            }
-                        }
-                        return bestBoard;
-                    } else {//else, calculating black's turn
-                        while (!children.isEmpty()) {
-                            Board currBoard = miniMax(children.remove(), true, depth + 1);
-                            if (currBoard.fitness < minVal) {
-                                minVal = currBoard.fitness;
-                                bestBoard = currBoard;
-                            }
-                        }
-                        return bestBoard;
-                    }
-
-                } else {//else, max depth reached, return root
-                    return root;
-                }
-            } else {//else, there are no more moves that can be made, return root
+            LinkedList<Board> children = this.shuffleMoves((LinkedList<Board>) root.children.clone(), seed);
+            if (children.isEmpty() || currDepth >= maxDepth) {//if there are moves that can be made
                 return root;
+            } else {//else, max depth reached, return root
+                int maxVal = Integer.MIN_VALUE;
+                int minVal = Integer.MAX_VALUE;
+                Board bestBoard = children.get(0);
+                if (max) {//if calculating white's turn
+                    while (!children.isEmpty()) {
+                        Board currBoard = miniMax(children.remove(), false, currDepth + 1, maxDepth);
+                        if (currBoard.fitness > maxVal) {
+                            maxVal = currBoard.fitness;
+                            if (currDepth == 0) {
+                                bestBoard = currBoard;
+                            } else {
+                                bestBoard = currBoard.parent;
+                            }
+                        }
+                    }
+                    return bestBoard;
+                } else {//else, calculating black's turn
+                    while (!children.isEmpty()) {
+                        Board currBoard = miniMax(children.remove(), true, currDepth + 1, maxDepth);
+                        if (currBoard.fitness < minVal) {
+                            minVal = currBoard.fitness;
+                            if (currDepth == 0) {
+                                bestBoard = currBoard;
+                            } else {
+                                bestBoard = currBoard.parent;
+                            }
+                        }
+                    }
+                    return bestBoard;
+                }
             }
+        }
+        Board alphaBeta(Board root, boolean max, int currDepth, int maxDepth, int alpha, int beta) {
+            root.calculateChildren(team);
+            LinkedList<Board> children = this.shuffleMoves((LinkedList<Board>) root.children.clone(), seed);
+            if (children.isEmpty() || currDepth >= maxDepth) {//if there are moves that can be made
+                return root;
+            } else {//else, max depth reached, return root
+                int maxVal = Integer.MIN_VALUE;
+                int minVal = Integer.MAX_VALUE;
+                Board bestBoard = children.get(0);
+                if (max) {//if calculating white's turn
+                    while (!children.isEmpty()) {
+                        Board currBoard = alphaBeta(children.remove(), false, currDepth + 1, maxDepth, alpha, beta);
+                        if (currBoard.fitness > maxVal) {
+                            maxVal = currBoard.fitness;
+                            if (currDepth == 0) {
+                                bestBoard = currBoard;
+                            } else {
+                                bestBoard = currBoard.parent;
+                            }
+                        }
+                        alpha = Math.max(alpha, maxVal);
+                        if (alpha >= beta){
+                            break;
+                        }
+                    }
+                    return bestBoard;
+                } else {//else, calculating black's turn
+                    while (!children.isEmpty()) {
+                        Board currBoard = alphaBeta(children.remove(), true, currDepth + 1, maxDepth, alpha, beta);
+                        if (currBoard == null){
+                            System.out.println("Boardlist size " + children.size());
+
+                        }
+                        System.out.println(currBoard.whiteCheck);
+                        if (currBoard.fitness < minVal) {
+                            minVal = currBoard.fitness;
+                            if (currDepth == 0) {
+                                bestBoard = currBoard;
+                            } else {
+                                bestBoard = currBoard.parent;
+                            }
+                        }
+                        beta = Math.min(beta, minVal);
+                        if (beta <= alpha){
+                            break;
+                        }
+                    }
+                    return bestBoard;
+                }
+            }
+        }
+        public LinkedList<Board> shuffleMoves(LinkedList<Board> children, long seed) {
+            LinkedList<Board> newChildren = (LinkedList<Board>) children.clone();
+            LinkedList<Board> copy = new LinkedList<>();
+            Random randy = new Random(seed);
+            while (!newChildren.isEmpty()) {
+                int index = randy.nextInt(newChildren.size());
+                copy.add(newChildren.remove(index));
+            }
+            return copy;
         }
     }
 }
