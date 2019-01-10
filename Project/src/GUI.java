@@ -1,8 +1,5 @@
-package project;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,9 +22,11 @@ public class GUI {
     LinkedList<Coordinate> currentMoveSet = new LinkedList<>();
     Coordinate lastPieceClicked;
     JButton nextTurn = new JButton("Next Turn");
-    String path = "D:\\Desktop_HDD\\IMAGES\\";
+    String path = "C:\\IMAGES\\";
+    Game game;
 
-    public GUI(Board b) {
+    public GUI(Board b, Game game) {
+        this.game = game;
         this.b = b;
         initializeBoard(true);
         frame = new JFrame();
@@ -75,9 +74,8 @@ public class GUI {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            Game game = new Game(currTeam);
-            b = game.nextMove(b);
-            b.printBoard();
+            b = game.nextMove(b, currTeam);
+            //b.printBoard();
             currTeam = !currTeam;
             for (int yCoor = 0; yCoor < 8; yCoor++) {
                     for (int xCoor = 0; xCoor < 8; xCoor++) {
@@ -166,6 +164,7 @@ public class GUI {
                 }
                 LinkedList<Coordinate> possibleMoves = b.getBoard()[x][y].moves(x, y, b.getBoard());
                 btn.setBackground(Color.RED);
+
                 while (!possibleMoves.isEmpty()) {
                     currentMoveSet.add(possibleMoves.get(0));
                     //System.out.println(possibleMoves.get(0).x + " " + possibleMoves.get(0).y);
