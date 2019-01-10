@@ -75,6 +75,9 @@ public class GUI {
         @Override
         public void actionPerformed(ActionEvent e) {
             b = game.nextMove(b, currTeam);
+            if (b == null){
+                System.exit(1);
+            }
             //b.printBoard();
             currTeam = !currTeam;
             for (int yCoor = 0; yCoor < 8; yCoor++) {

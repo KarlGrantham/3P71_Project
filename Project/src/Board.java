@@ -98,31 +98,6 @@ public class Board {
         boardState[3][7] = new King(false);
         fitness = calcFitness();
     }
-    public Board(String Karl){
-        boolean team = true;
-        for (int i = 0; i < 2; i++) {
-            for (int j = 0; j < 8; j++) {
-                boardState[j][i * 5 + 1] = new Pawn(team);
-            }
-            boardState[0][i * 7] = new Rook(team);
-            boardState[1][i * 7] = new Knight(team);
-            boardState[2][i * 7] = new Bishop(team);
-            boardState[5][i * 7] = new Bishop(team);
-            boardState[6][i * 7] = new Knight(team);
-            boardState[7][i * 7] = new Rook(team);
-            team = false;
-        }
-        boardState[3][4] = new Pawn (true);
-        boardState[3][5] = new Pawn (false);
-        boardState[2][4] = new Pawn (false);
-        boardState[3][6] = null;
-        boardState[2][6] = null;
-        boardState[3][0] = new Queen(true);
-        boardState[4][0] = new King(true);
-        boardState[4][7] = new Queen(false);
-        boardState[3][7] = new King(false);
-        fitness = calcFitness();
-    }
 
     /**
      * Creates all boards that are possible as a result of a legal move on this board
@@ -341,7 +316,7 @@ public class Board {
                             if (x - 1 >= 0) {
                                 if ((boardState[x - 1][y] != null) && (boardState[x - 1][y].getClass().getName().equals("Pawn")) && (boardState[x - 1][y].team)) {
                                     //if there is a white pawn to the left
-                                    if (parent.getBoard()[x - 1][y] == null) {//if there was not a pawn there last board
+                                    if (parent.getBoard()[x - 1][y] == null) {//if there was not a pawn there last board KKKKKKKKKKKKKKKKK
                                         Board found = new Board(boardState);//create duplicate board;
                                         Piece attPiece = found.getBoard()[x][y].deepCopy();//get duplicate of attacking piece
                                         found.getBoard()[x - 1][y] = null;//capture piece
