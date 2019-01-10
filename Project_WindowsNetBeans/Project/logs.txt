@@ -1,0 +1,10 @@
+[Event Brock University Finals]
+[Site St. Catharine's, Ontario, CAN]
+[Date Thu Jan 10 01:02:46 EST 2019]
+[White Doe, John]
+[Black Doe, Jane]
+1. White: C, 1 to C, 3
+2. Black: D, 6 to D, 4
+3. White: B, 1 to B, 3
+4. Black: E, 7 to A, 3
+Checkmate, Black wins!
