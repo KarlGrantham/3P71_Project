@@ -188,6 +188,23 @@ public class Board {
                     }
                 }
             }
+            LinkedList<Board> childList = checkCastling(team);
+            while (!childList.isEmpty()) {
+                child = childList.remove(0);
+                if (child != null) {
+                    child.whiteCheck = child.checkCheck(true);
+                    child.blackCheck = child.checkCheck(false);
+                    if (team) {//if white its white's turn to move
+                        if (!child.whiteCheck) {//if this turn will not result in white being in check
+                            tempChildren.add(child);//add this alteration to the list of children
+                        }
+                    } else {//else, it's black's turn to move
+                        if (!child.blackCheck) {//if this turn will not result in black being in check
+                            tempChildren.add(child);//add this alteration to the list of children
+                        }
+                    }
+                }
+            }
         }
         children = tempChildren;//set child list to new child list
     }
